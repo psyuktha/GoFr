@@ -1,7 +1,8 @@
 package main
 
 import (
-	"Go_backend/sendmail"
+	"GoFr_Server/llm"
+	"GoFr_Server/sendmail"
 	"bytes"
 	"errors"  // Standard Go errors package
 	"os/exec" // Import os/exec for running external commands
@@ -11,10 +12,10 @@ import (
 )
 
 func main() {
-    app := gofr.New()
+	app := gofr.New()
 
-    // Chain with Sentiment Analysis API
-    app.GET("/get_twit_trend", func(ctx *gofr.Context) (interface{}, error) {
+	// Chain with Sentiment Analysis API
+	app.GET("/get_twit_trend", func(ctx *gofr.Context) (interface{}, error) {
 		// Define the Python script to execute
 		cmd := exec.Command("python", "twittrend.py")
 
@@ -45,57 +46,58 @@ func main() {
 		}, nil
 	})
 
+	app.POST("/create/x", func(ctx *gofr.Context) (interface{}, error) {
+		// Get the text from request body
+		var body struct {
+			Text string `json:"text"`
+		}
+		if err := ctx.Bind(&body); err != nil {
+			return nil, errors.New("invalid request body")
+		}
 
-    app.POST("/create/x", func(ctx *gofr.Context) (interface{}, error) {
-        // Get the text from request body
-        var body struct {
-            Text string `json:"text"`
-        }
-        if err := ctx.Bind(&body); err != nil {
-            return nil, errors.New("invalid request body")
-        }
+		if body.Text == "" {
+			return nil, errors.New("text is required")
+		}
 
-        if body.Text == "" {
-            return nil, errors.New("text is required")
-        }
+		Restes := llm.Llm()
 
-        ctx.Logger.Info("Received text: ", body.Text)
+		ctx.Logger.Info("Received text: ", Restes)
 
-        cmd := exec.Command("python", "twit.py", body.Text)
-        err := cmd.Run()
-        if err != nil {
-            return nil, errors.New("failed to run the Python script")
-        }
+		cmd := exec.Command("python", "twit.py", body.Text)
+		err := cmd.Run()
+		if err != nil {
+			return nil, errors.New("failed to run the Python script")
+		}
 
-        return map[string]string{
-            "message": "Text received successfully and script executed",
-        }, nil
-    })
+		return map[string]string{
+			"message": "Text received successfully and script executed",
+		}, nil
+	})
 
-    app.POST("/create/email", func(ctx *gofr.Context) (interface{}, error) {
-        var body struct {
-            Context string `json:"context"`
-        }
-        if err := ctx.Bind(&body); err != nil {
-            return nil, errors.New("invalid request body")
-        }
+	app.POST("/create/email", func(ctx *gofr.Context) (interface{}, error) {
+		var body struct {
+			Context string `json:"context"`
+		}
+		if err := ctx.Bind(&body); err != nil {
+			return nil, errors.New("invalid request body")
+		}
 
-        if body.Context == "" {
-            return nil, errors.New("context is required")
-        }
+		if body.Context == "" {
+			return nil, errors.New("context is required")
+		}
 
-        ctx.Logger.Info("Received context: ", body.Context)
+		ctx.Logger.Info("Received context: ", body.Context)
 
-        // Call the Send_Main function from sendmail package
-        err := sendmail.Send_Mail(body.Context)
-        if err != nil {
-            return nil, errors.New("failed to send email: " + err.Error())
-        }
+		// Call the Send_Main function from sendmail package
+		sendmail.Send_mail(body.Context)
+		// if err != nil {
+		// 	return nil, errors.New("failed to send email: " + err.Error())
+		// }
 
-        return map[string]string{
-            "message": "Email sent successfully",
-        }, nil
-    })
+		return map[string]string{
+			"message": "Email sent successfully",
+		}, nil
+	})
 
-    app.Run()
+	app.Run()
 }
