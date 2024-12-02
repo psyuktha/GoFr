@@ -1,7 +1,6 @@
 package main
 
 import (
-<<<<<<<< Updated upstream:GoFrServer/server/server.go
 	"GoFr/GoFrServer/llm"
 	"GoFr/GoFrServer/sendmail"
 	"bytes"
@@ -56,19 +55,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
-========
-	"bytes"
-	"errors" // Standard Go errors package
-	"gofr-server/llm"
-	"gofr-server/sendmail"
-	"os/exec" // Import os/exec for running external commands
-	"strings"
-
-	"gofr.dev/pkg/gofr"
-)
-
-func main() {
->>>>>>>> Stashed changes:gofr-server/server.go
 	app := gofr.New()
 
 	// Chain with Sentiment Analysis API
@@ -143,7 +129,6 @@ func main() {
 			return nil, errors.New("context is required")
 		}
 
-<<<<<<<< Updated upstream:GoFrServer/server/server.go
 		// Get the LLM-generated content
 		generatedContent, err := callLLMAPI(body.Context)
 		if err != nil {
@@ -158,18 +143,6 @@ func main() {
 		return map[string]string{
 			"message": "Email generated and sent successfully",
 			"content": generatedContent,
-========
-		ctx.Logger.Info("Received context: ", body.Context)
-
-		// Call the Send_Main function from sendmail package
-		sendmail.Send_mail(body.Context)
-		// if err != nil {
-		// 	return nil, errors.New("failed to send email: " + err.Error())
-		// }
-
-		return map[string]string{
-			"message": "Email sent successfully",
->>>>>>>> Stashed changes:gofr-server/server.go
 		}, nil
 	})
 
