@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 module GoFr
 
 go 1.23.2
@@ -100,3 +101,8 @@ require (
 	modernc.org/strutil v1.2.0 // indirect
 	modernc.org/token v1.1.0 // indirect
 )
+=======
+module gofr-server
+
+go 1.23.2
+>>>>>>> Stashed changes
