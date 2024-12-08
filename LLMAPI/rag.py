@@ -9,7 +9,7 @@ from langchain_community.chat_models import ChatOllama
 from langchain_core.runnables import RunnablePassthrough
 from langchain.retrievers.multi_query import MultiQueryRetriever
 def db():
-    local_path = "output.txt"
+    local_path = "GoFrServer/output.txt"
 
     # Local PDF file uploads
     if local_path:
@@ -24,7 +24,7 @@ def db():
     chunks = text_splitter.split_documents(data)
 
     current_dir = os.getcwd()
-    persistent_directory = os.path.join(current_dir, "db", "chroma_db_for_GitHub")
+    persistent_directory = os.path.join(current_dir, "db", "db")
     embedding_function = OllamaEmbeddings(model="nomic-embed-text", show_progress=True)
 
     if os.path.exists(persistent_directory):
