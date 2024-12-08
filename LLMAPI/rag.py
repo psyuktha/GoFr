@@ -24,7 +24,7 @@ def db():
     chunks = text_splitter.split_documents(data)
 
     current_dir = os.getcwd()
-    persistent_directory = os.path.join(current_dir, "db", "chroma_db_for_GitHub")
+    persistent_directory = os.path.join(current_dir, "db", "db")
     embedding_function = OllamaEmbeddings(model="nomic-embed-text", show_progress=True)
 
     if os.path.exists(persistent_directory):

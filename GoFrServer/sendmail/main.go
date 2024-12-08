@@ -2,9 +2,9 @@ package sendmail
 
 import (
 	"bytes"
-	"encoding/csv"
+	// "encoding/csv"
 	"encoding/json"
-	"fmt"
+	// "fmt"
 	"log"
 	"net/http"
 	"os"
@@ -75,51 +75,24 @@ func Get_llm_response(context string) (string, string) {
 }
 
 // Send_mail sends the generated email to a list of recipients from a CSV file.
-func Send_mail(context string) error {
-	// Open the CSV file containing emails
-	file, err := os.Open("GoFrServer/emails.csv")
-	if err != nil {
-		return fmt.Errorf("failed to open file: %s", err)
-	}
-	defer file.Close()
+func Send_mail(content string) error {
+	from := mail.NewEmail("Suvan Banerjee", "suvan@burdenoff.com")
+	to := mail.NewEmail("Recipient", "2109yukips@gmail.com")
+	subject := "AI Generated Content"
+	plainTextContent := content
+	htmlContent := "<strong>" + content + "</strong>"
 
-	// Read all email records
-	reader := csv.NewReader(file)
-	records, err := reader.ReadAll()
-	if err != nil {
-		return fmt.Errorf("failed to read file: %s", err)
-	}
-
-	// Get the subject and body from LLM response
-	text, title := Get_llm_response(context)
-	if text == "_ERROR" || title == "_ERROR" {
-		return fmt.Errorf("failed to get LLM response")
-	}
-
-	// Get SendGrid API key from environment variable
-
-	// Initialize SendGrid client
+	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
 	client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
+	response, err := client.Send(message)
 
-	// Send emails to all recipients
-	for _, record := range records {
-		fmt.Println(record[0])
-		toEmail := record[0] // Email address from the CSV file
-		from := mail.NewEmail("Suvan Banerjee", "suvan@burdenoff.com")
-		to := mail.NewEmail("User", toEmail)
-		plainTextContent := text
-		htmlContent := "<strong>" + text + "</strong>"
-
-		message := mail.NewSingleEmail(from, title, to, plainTextContent, htmlContent)
-		response, err := client.Send(message)
-
-		if err != nil {
-			log.Printf("Failed to send email to %s: %s", toEmail, err)
-			continue
-		}
-
-		log.Printf("Email sent to %s. Status: %d", toEmail, response.StatusCode)
+	if err != nil {
+		log.Printf("Failed to send email: %v", err)
+		return err
 	}
+
+	log.Printf("Email Status Code: %d", response.StatusCode)
+	log.Printf("Email Body: %s", response.Body)
 
 	return nil
 }
