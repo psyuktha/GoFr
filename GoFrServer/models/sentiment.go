@@ -61,20 +61,20 @@ func predictSentiment(text string) (string, error) {
 	return "", fmt.Errorf("sentiment not found in response")
 }
 
-func main() {
-	texts := []string{
-		"I absolutely loved this movie! The acting was superb and the plot was engaging.",
-		"The service at this restaurant was terrible. I'll never go back.",
-		"The product works as expected. Nothing special, but it gets the job done.",
-		"I'm somewhat disappointed with my purchase. It's not as good as I hoped.",
-		"This book changed my life! I couldn't put it down and learned so much.",
-	}
+// func main() {
+// 	texts := []string{
+// 		"I absolutely loved this movie! The acting was superb and the plot was engaging.",
+// 		"The service at this restaurant was terrible. I'll never go back.",
+// 		"The product works as expected. Nothing special, but it gets the job done.",
+// 		"I'm somewhat disappointed with my purchase. It's not as good as I hoped.",
+// 		"This book changed my life! I couldn't put it down and learned so much.",
+// 	}
 
-	for _, text := range texts {
-		sentiment, err := predictSentiment(text)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Printf("Text: %s\nSentiment: %s\n\n", text, sentiment)
-	}
-}
+// 	for _, text := range texts {
+// 		sentiment, err := predictSentiment(text)
+// 		if err != nil {
+// 			log.Fatal(err)
+// 		}
+// 		fmt.Printf("Text: %s\nSentiment: %s\n\n", text, sentiment)
+// 	}
+// }
